@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ormoc City EOC/CDRRMO MOO Project Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                Ormoc City DRRM/EOC MOO Project Dashboard
+            </h1>
+            <p class="text-lg text-gray-600">
+                Development of the Manual of Operations for the EOC and CDRRMO
+            </p>
+        </header>
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+            <!-- Metric 1: Budget -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border-b-4 border-teal-500 hover:shadow-xl transition duration-300">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Approved Budget for the Contract (ABC)</h2>
+                <p class="text-3xl font-bold text-teal-600">
+                    PHP 598,500.00
+                </p>
+                <span class="text-xs text-gray-400 mt-2 block">Source: TOR / Financial Proposal</span>
+            </div>
+
+            <!-- Metric 2: Timeline -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border-b-4 border-yellow-500 hover:shadow-xl transition duration-300">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Project Duration</h2>
+                <p class="text-3xl font-bold text-yellow-600">
+                    Oct 2025 – Feb 2026
+                </p>
+                <span class="text-xs text-gray-400 mt-2 block">4.5 Months (Source: Gantt Chart)</span>
+            </div>
+
+            <!-- Metric 3: Key Output -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border-b-4 border-indigo-500 hover:shadow-xl transition duration-300">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Primary Deliverable</h2>
+                <p class="text-3xl font-bold text-indigo-600">
+                    Final Manual of Operations
+                </p>
+                <span class="text-xs text-gray-400 mt-2 block">EOC and CDRRMO</span>
+            </div>
+        </div>
+
+        <!-- Project Details (Team and Milestones) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Card 1: Key Team Members -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-blue-900 mb-4 border-b pb-2">Key Personnel</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <!-- Icon/Avatar Placeholder -->
+                            <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">AS</div>
+                        </div>
+                        <div>
+                            <p class="text-base font-semibold text-gray-800">Alvin M. Silva, MDM</p>
+                            <p class="text-sm text-gray-500">Lead Consultant & Team Leader</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <!-- Icon/Avatar Placeholder -->
+                            <div class="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">VA</div>
+                        </div>
+                        <div>
+                            <p class="text-base font-semibold text-gray-800">Veronica Mae L. Adorza, MDM</p>
+                            <p class="text-sm text-gray-500">Technical Writer/M&E Specialist</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Payment Milestones (Progress Billing) -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-blue-900 mb-4 border-b pb-2">Payment Milestones (TOR Section IX)</h2>
+                <ul class="space-y-4">
+                    <!-- Milestone 1 -->
+                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                        <span class="font-semibold text-gray-700">1. Upon submission of Inception Report</span>
+                        <span class="text-teal-600 font-bold">25%</span>
+                    </li>
+                    <!-- Milestone 2 -->
+                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                        <span class="font-semibold text-gray-700">2. Upon submission of Draft Manual of Operations</span>
+                        <span class="text-teal-600 font-bold">40%</span>
+                    </li>
+                    <!-- Milestone 3 -->
+                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                        <span class="font-semibold text-gray-700">3. Upon submission of Validation Workshop Report</span>
+                        <span class="text-teal-600 font-bold">20%</span>
+                    </li>
+                    <!-- Milestone 4 -->
+                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                        <span class="font-semibold text-gray-700">4. Upon submission of Final Manual</span>
+                        <span class="text-teal-600 font-bold">15%</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER FOR NAVIGATION -->
+    <footer class="max-w-6xl mx-auto mt-12 pt-6 border-t border-gray-200">
+        <div class="p-6 bg-gray-50 rounded-xl shadow-inner">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Project Documentation Quick Links</h3>
+            
+            <nav class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                
+                <a href="#" class="block p-3 rounded-lg bg-white shadow hover:bg-blue-100 transition duration-150 transform hover:scale-[1.02]">
+                    <span class="text-sm font-medium text-blue-700 block">Terms of Reference</span>
+                    <span class="text-xs text-gray-500">Scope & Requirements</span>
+                </a>
+
+                <a href="#" class="block p-3 rounded-lg bg-white shadow hover:bg-green-100 transition duration-150 transform hover:scale-[1.02]">
+                    <span class="text-sm font-medium text-green-700 block">Technical Proposal</span>
+                    <span class="text-xs text-gray-500">Methodology & Approach</span>
+                </a>
+
+                <a href="#" class="block p-3 rounded-lg bg-white shadow hover:bg-yellow-100 transition duration-150 transform hover:scale-[1.02]">
+                    <span class="text-sm font-medium text-yellow-700 block">Financial Proposal</span>
+                    <span class="text-xs text-gray-500">Budget Details</span>
+                </a>
+
+                <a href="#" class="block p-3 rounded-lg bg-white shadow hover:bg-red-100 transition duration-150 transform hover:scale-[1.02]">
+                    <span class="text-sm font-medium text-red-700 block">Gantt Chart</span>
+                    <span class="text-xs text-gray-500">Timeline & Milestones</span>
+                </a>
+
+            </nav>
+
+            <p class="text-center text-xs text-gray-400 mt-6">
+                Ormoc City EOC/CDRRMO MOO Development Project - Dashboard v1.1
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
