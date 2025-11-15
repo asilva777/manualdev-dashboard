@@ -6,6 +6,7 @@
     <title>Ormoc DRRM Project Dashboard</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom font and base styles */
         body {
@@ -29,6 +30,37 @@
         .progress-bar-fill {
             transition: width 1s ease-in-out;
         }
+
+        .guarantee-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .profile-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .profile-btn:hover {
+            background-color: #bfdbfe;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -36,25 +68,26 @@
     <div id="app" class="max-w-7xl mx-auto">
         
         <!-- Header Section -->
-        <header class="mb-8">
+        <header class="mb-8 text-center">
             <h1 class="text-3xl sm:text-4xl font-extrabold project-text-primary mb-2">
                 Ormoc DRRM Project Dashboard
             </h1>
             <p class="text-xl text-gray-600">
                 Development of the Manual of Operations for the EOC and CDRRMO
             </p>
-            <div class="mt-3 inline-block px-4 py-1 text-sm font-semibold rounded-full bg-yellow-200 text-yellow-800" id="project-status-badge">
+            <div class="mt-3 inline-block px-4 py-1 text-sm font-semibold rounded-full bg-blue-200 text-blue-800" id="project-status-badge">
                 Status: Loading...
             </div>
         </header>
 
         <!-- Metrics Grid -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" id="metrics-grid">
-            <!-- Metric 1: Budget (From TOR) -->
-            <div class="card p-5 border-b-4 project-border shadow-lg">
-                <p class="text-sm font-medium text-gray-500">Approved Budget (ABC)</p>
-                <p class="text-2xl font-bold text-gray-800 mt-1" id="metric-budget">PHP 598,500.00</p>
-                <span class="text-xs text-green-600 font-medium">100% Utilized (Ceiling)</span>
+            <!-- Replaced Budget Metric with Guarantee Seal -->
+            <div class="card p-5 border-b-4 project-border shadow-lg flex flex-col items-center text-center">
+                <div class="guarantee-badge">100%</div>
+                <p class="mt-3 text-sm font-medium text-gray-700">
+                    Breakthrough and innovative approach to preparedness, response, and anticipatory actions.
+                </p>
             </div>
 
             <!-- Metric 2: Duration (From Gantt) -->
@@ -103,16 +136,13 @@
     <!-- JavaScript for Data and Rendering -->
     <script>
         // --- 1. SIMULATED PROJECT DATA (JSON structure) ---
-        // Data derived from the TOR, Financial, Technical, and CV documents.
         const projectData = {
             title: "Development of the Manual of Operations for the Emergency Operations Center (EOC) and the City Disaster Risk Reduction and Management (CDRRM) Office",
-            startDate: new Date('2025-10-01'), // From Gantt
-            endDate: new Date('2026-02-09'), // From Gantt (Turnover date)
-            currentDate: new Date('2025-11-25'), // Assumed current date (Past Inception and Assessment)
-            budget: "PHP 598,500.00", // From TOR
+            startDate: new Date('2025-10-01'),
+            endDate: new Date('2026-02-09'),
+            currentDate: new Date('2025-11-25'),
             status: "Drafting Phase",
             milestones: [
-                // Based on TOR Payment Schedule and Gantt dates
                 { id: 1, name: "Project Inception & Mobilization (Inception Report)", due: new Date('2025-11-02'), payment: "25%", completed: true, completionDate: new Date('2025-11-02') },
                 { id: 2, name: "Situational & Institutional Assessment Report", due: new Date('2025-11-16'), payment: "0%", completed: true, completionDate: new Date('2025-11-16') },
                 { id: 3, name: "Manual Development (Draft Manual of Operations)", due: new Date('2026-01-04'), payment: "40%", completed: false },
@@ -120,60 +150,55 @@
                 { id: 5, name: "Final MOO Submission & Turnover", due: new Date('2026-02-09'), payment: "15%", completed: false }
             ],
             team: [
-                // Based on CVs and Technical Proposal
-                { name: "Alvin M. Silva, MDM", role: "Lead Consultant & Systems Strategist", bio: "Over 18 years experience in DRR, PSCP, and resilience planning.", color: "bg-blue-100 text-blue-800" },
-                { name: "Veronica Mae L. Adorza, MDM", role: "Technical Writer & M&E Specialist", bio: "15+ years in technical writing, project documentation, and monitoring.", color: "bg-green-100 text-green-800" }
+                {
+                    name: "Alvin M. Silva, MDM",
+                    role: "Lead Consultant & Systems Strategist",
+                    bio: "Over 18 years experience in DRR, PSCP, and resilience planning.",
+                    color: "bg-blue-100 text-blue-800",
+                    profileUrl: "https://alvin-silva.aiwaapp.live/about"
+                },
+                {
+                    name: "Veronica Mae L. Adorza, MDM",
+                    role: "Technical Writer & M&E Specialist",
+                    bio: "15+ years in technical writing, project documentation, and monitoring.",
+                    color: "bg-green-100 text-green-800",
+                    profileUrl: "https://drive.google.com/file/d/1IHDDIWsSqm8tKieATzkTbm4QOmIhLE9L/view?usp=sharing"
+                }
             ]
         };
 
         // --- 2. CORE RENDERING LOGIC ---
-
-        /**
-         * Calculates project progress based on time elapsed, capped by milestone status.
-         * If Milestone 2 is complete, minimum progress is set based on the first payment milestone (25%).
-         */
         function calculateProgress(data) {
             const totalDurationMs = data.endDate.getTime() - data.startDate.getTime();
             const elapsedDurationMs = data.currentDate.getTime() - data.startDate.getTime();
-            
             if (totalDurationMs <= 0 || elapsedDurationMs <= 0) return 0;
-
             let progress = (elapsedDurationMs / totalDurationMs) * 100;
             progress = Math.min(progress, 100); 
-
-            // If the first major milestone (25% payment, tied to inception) is complete,
-            // ensure the progress reflects at least that achievement, even if the current date is behind.
             if (data.milestones[0].completed) {
-                // Minimum progress based on 25% billing completion
                 progress = Math.max(25, progress); 
             }
-            
             return progress.toFixed(1);
         }
 
-        // Function to format a date nicely
         function formatDate(date) {
             const options = { year: 'numeric', month: 'short', day: 'numeric' };
             return date.toLocaleDateString('en-US', options);
         }
 
-        // Render the Milestone Timeline
         function renderTimeline(milestones) {
             const container = document.getElementById('timeline-container');
             container.innerHTML = milestones.map(milestone => {
                 const isCompleted = milestone.completed;
                 const isPastDue = !isCompleted && milestone.due < projectData.currentDate;
 
-                let statusIcon;
-                let statusText;
-                let statusClass;
+                let statusIcon, statusText, statusClass;
 
                 if (isCompleted) {
                     statusIcon = `<svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
                     statusText = `<span class="text-sm font-semibold text-green-600">COMPLETED (${formatDate(milestone.completionDate)})</span>`;
                     statusClass = 'border-green-300 bg-green-50';
                 } else if (isPastDue) {
-                     statusIcon = `<svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>`;
+                    statusIcon = `<svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>`;
                     statusText = `<span class="text-sm font-semibold text-red-600">OVERDUE (Due ${formatDate(milestone.due)})</span>`;
                     statusClass = 'border-red-300 bg-red-50';
                 } else {
@@ -203,15 +228,13 @@
             }).join('');
         }
 
-        // Render the Team Overview
         function renderTeam(team) {
             const container = document.getElementById('team-container');
             container.innerHTML = team.map(member => `
                 <div class="p-4 border border-gray-100 rounded-lg bg-gray-50">
                     <div class="flex items-center mb-2">
-                        <!-- Placeholder for initials/avatar -->
                         <div class="w-10 h-10 flex items-center justify-center rounded-full ${member.color} mr-3 text-lg font-bold shadow-sm">
-                            ${member.name.split(' ').map(n => n[0]).join('')}
+                            ${member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
                         </div>
                         <div>
                             <p class="font-bold text-gray-900">${member.name}</p>
@@ -219,45 +242,35 @@
                         </div>
                     </div>
                     <p class="text-xs text-gray-600 mt-2 p-1 border-t pt-2">${member.bio}</p>
+                    <a href="${member.profileUrl}" target="_blank" class="profile-btn">ACCESS FULL PROFILE</a>
                 </div>
             `).join('');
         }
 
-        // Main function to initialize the dashboard
         function initializeDashboard() {
-            // 1. Calculate and update progress
             const progress = calculateProgress(projectData);
             document.getElementById('metric-progress-percent').textContent = `${progress}%`;
             document.getElementById('progress-bar').style.width = `${progress}%`;
             
-            // 2. Update status text based on progress
             let statusText = projectData.status;
-            let statusClass = "bg-yellow-200 text-yellow-800";
+            let statusClass = "bg-blue-200 text-blue-800";
 
             if (parseFloat(progress) >= 95) {
                 statusText = "Final Review & Turnover";
                 statusClass = "bg-purple-200 text-purple-800";
             } else if (parseFloat(progress) >= 25) {
-                 statusText = "Drafting Phase";
-                statusClass = "bg-blue-200 text-blue-800";
-            } else {
-                 statusText = "Inception & Assessment";
-                statusClass = "bg-yellow-200 text-yellow-800";
+                statusText = "Drafting Phase";
             }
 
             const statusBadge = document.getElementById('project-status-badge');
             statusBadge.textContent = `Status: ${statusText}`;
             statusBadge.className = `mt-3 inline-block px-4 py-1 text-sm font-semibold rounded-full ${statusClass}`;
 
-
-            // 3. Render dynamic sections
             renderTimeline(projectData.milestones);
             renderTeam(projectData.team);
         }
 
-        // Run the main initialization function once the document is fully loaded
         window.onload = initializeDashboard;
-
     </script>
 </body>
 </html>
