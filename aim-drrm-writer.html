@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIM-DRRM Writer: MOO Co-Author</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom font and scrollbar styling */
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
+        .output-panel {
+            min-height: 80vh;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            border-radius: 0.75rem;
+        }
+        .content-area {
+            white-space: pre-wrap;
+            min-height: 400px;
+        }
+        .loading-animation {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #10b981; /* Emerald-500 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mx-auto p-4 md:p-8">
+    <!-- Header -->
+    <header class="mb-6">
+        <h1 class="text-3xl font-extrabold text-gray-900 flex items-center">
+            <i data-lucide="book-open-check" class="w-8 h-8 mr-3 text-red-600"></i>
+            AIM-DRRM Writer <span class="text-xl font-medium text-gray-500 ml-3">| MOO Co-Author</span>
+        </h1>
+        <p class="text-gray-600 mt-1">Intelligent drafting engine for Ormoc City's DRRMO and EOC Manual of Operations.</p>
+    </header>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Panel: Controls and Input -->
+        <div class="lg:w-1/3 p-6 bg-white rounded-xl shadow-lg h-fit sticky top-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Drafting Controls</h2>
+
+            <!-- Chapter Selection -->
+            <div class="mb-4">
+                <label for="chapter-select" class="block text-sm font-medium text-gray-700 mb-1">1. Select Chapter</label>
+                <select id="chapter-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150">
+                    <!-- Options populated by JS -->
+                </select>
+            </div>
+
+            <!-- Section Selection -->
+            <div class="mb-4">
+                <label for="section-select" class="block text-sm font-medium text-gray-700 mb-1">2. Select Section</label>
+                <select id="section-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150" disabled>
+                    <option value="">Select a Chapter first</option>
+                    <!-- Options populated by JS -->
+                </select>
+            </div>
+            
+            <!-- User Prompt Input -->
+            <div class="mb-6">
+                <label for="user-prompt" class="block text-sm font-medium text-gray-700 mb-1">3. Specific Instruction / Prompt (Optional)</label>
+                <textarea id="user-prompt" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150" placeholder="e.g., Draft the specific TOR for the EOC Communications Officer, focusing on social media monitoring."></textarea>
+            </div>
+
+            <!-- Generation Button -->
+            <button id="generate-button" class="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-700 transition duration-200 flex items-center justify-center disabled:opacity-50" onclick="generateContent()" disabled>
+                <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
+                Generate Section Draft
+            </button>
+
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="loading-animation mt-4 mx-auto"></div>
+
+            <!-- Status Message -->
+            <p id="status-message" class="text-xs text-center mt-3 text-red-600 min-h-[20px]"></p>
+
+        </div>
+
+        <!-- Right Panel: Output and Compliance Viewer -->
+        <div class="lg:w-2/3">
+            <div class="output-panel">
+                <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-red-500 pb-2 mb-4">
+                    Drafting Output: <span id="section-title" class="text-red-600 font-normal text-xl">Select a Section to Begin</span>
+                </h2>
+                
+                <!-- Main Content Output -->
+                <div id="content-output" class="content-area text-gray-800 leading-relaxed">
+                    <p class="text-gray-500 italic">The AIM-DRRM Writer is ready. Use the controls on the left to select a chapter and section from the MOO outline and start generating compliant, risk-informed protocols and narratives. The AI will enforce compliance with RA 10121, PSCP, and Adaptation mandates.</p>
+                </div>
+                
+                <!-- Compliance and Metadata -->
+                <div class="mt-8 pt-4 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-green-700 flex items-center">
+                        <i data-lucide="check-circle" class="w-5 h-5 mr-2 text-green-500"></i>
+                        Compliance & Technical Notes
+                    </h3>
+                    <div id="compliance-notes" class="text-sm text-gray-600 mt-2 p-3 bg-green-50 rounded-lg border border-green-200 min-h-[50px]">
+                        Awaiting content generation.
+                    </div>
+                    <div id="sources-output" class="text-xs text-gray-500 mt-4 hidden">
+                        <h4 class="font-medium mb-1">Grounding Sources (from Google Search)</h4>
+                        <ul id="sources-list" class="list-disc list-inside space-y-1"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+    // --- Configuration and Data Structure ---
+    const API_URL_BASE = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
+    const apiKey = ""; // API key will be provided by the runtime environment
+    
+    // The full MOO Outline Structure
+    const MOO_STRUCTURE = {
+        'Chapter 1': {
+            title: 'Foundations, Mandates, and Institutional Structure',
+            sections: {
+                '1.1': 'Legal Basis and Guiding Frameworks (RA 10121, PSCP, Sendai)',
+                '1.2': 'Purpose and Scope of the MOO',
+                '1.3': 'CDRRMO and EOC Institutional Structure (TORs, Accountability)',
+            }
+        },
+        'Chapter 2': {
+            title: 'Risk-Informed Governance and Data Management',
+            sections: {
+                '2.1': 'City Risk Profile and Context (Adaptation, Reduction)',
+                '2.2': 'Information Management and Technology (ISO 22301)',
+                '2.3': 'Resilience and Sustainable Development Integration',
+            }
+        },
+        'Chapter 3': {
+            title: 'Preparedness and Anticipatory Action Protocols',
+            sections: {
+                '3.1': 'Contingency Planning and Review Cycle',
+                '3.2': 'Early Warning System (EWS) Protocols',
+                '3.3': 'Anticipatory Action (AA) Framework and Triggers',
+            }
+        },
+        'Chapter 4': {
+            title: 'Emergency Operations Center (EOC) Activation and Management',
+            sections: {
+                '4.1': 'EOC Activation and Deactivation (Levels 1, 2, 3)',
+                '4.2': 'EOC Core Functions and Coordination (IMS)',
+                '4.3': 'Cluster Coordination Protocols',
+            }
+        },
+        'Chapter 5': {
+            title: 'Public Service Continuity Planning (PSCP) and Operations',
+            sections: {
+                '5.1': 'PSCP Framework Integration (Essential Services, MAD)',
+                '5.2': 'Continuity Protocols for EOC and Critical Offices (Alternate Sites)',
+                '5.3': 'Disruption Assessment and Reconstitution',
+            }
+        },
+        'Chapter 6': {
+            title: 'Response Operations and Field Deployment',
+            sections: {
+                '6.1': 'Search, Rescue, and Retrieval (SRR) Procedures',
+                '6.2': 'Evacuation and Shelter Management',
+                '6.3': 'Humanitarian Assistance and Logistics',
+            }
+        },
+        'Chapter 7': {
+            title: 'Post-Disaster Rehabilitation and Recovery',
+            sections: {
+                '7.1': 'Post-Disaster Needs Assessment (PDNA) Methodology',
+                '7.2': 'Recovery Planning (Build Back Better)',
+                '7.3': 'Psycho-Social Support and Financial Assistance',
+            }
+        },
+        'Chapter 8': {
+            title: 'MOO Review and Institutionalization',
+            sections: {
+                '8.1': 'MOO Review and Update Cycle',
+                '8.2': 'Training and Capacity Building (SIMEX)',
+                '8.3': 'Monitoring and Evaluation (M&E) Framework',
+            }
+        }
+    };
+
+    // --- DOM Elements ---
+    const chapterSelect = document.getElementById('chapter-select');
+    const sectionSelect = document.getElementById('section-select');
+    const userPromptTextarea = document.getElementById('user-prompt');
+    const generateButton = document.getElementById('generate-button');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const statusMessage = document.getElementById('status-message');
+    const sectionTitleDisplay = document.getElementById('section-title');
+    const contentOutput = document.getElementById('content-output');
+    const complianceNotes = document.getElementById('compliance-notes');
+    const sourcesOutput = document.getElementById('sources-output');
+    const sourcesList = document.getElementById('sources-list');
+    
+    // --- Utility Functions ---
+
+    /**
+     * Exponential Backoff Retry mechanism for API calls.
+     * @param {function} fn - The function to execute (e.g., the fetch call).
+     * @param {number} maxRetries - Maximum number of retries.
+     * @returns {Promise<any>} The result of the successful function call.
+     */
+    async function retryWithBackoff(fn, maxRetries = 5) {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                return await fn();
+            } catch (error) {
+                if (attempt === maxRetries) throw error;
+                const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                console.warn(`Attempt ${attempt} failed. Retrying in ${Math.round(delay / 1000)}s...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+    }
+
+    // --- UI/Dropdown Logic ---
+
+    function populateDropdowns() {
+        // Populate Chapters
+        for (const chapterKey in MOO_STRUCTURE) {
+            const option = document.createElement('option');
+            option.value = chapterKey;
+            option.textContent = `${chapterKey}: ${MOO_STRUCTURE[chapterKey].title}`;
+            chapterSelect.appendChild(option);
+        }
+        
+        // Initial state
+        chapterSelect.value = '';
+        generateButton.disabled = true;
+    }
+
+    function updateSections() {
+        const chapterKey = chapterSelect.value;
+        sectionSelect.innerHTML = '<option value="">-- Select Section --</option>';
+        sectionSelect.disabled = true;
+        generateButton.disabled = true;
+
+        if (chapterKey && MOO_STRUCTURE[chapterKey]) {
+            const sections = MOO_STRUCTURE[chapterKey].sections;
+            for (const sectionKey in sections) {
+                const option = document.createElement('option');
+                option.value = sectionKey;
+                option.textContent = `${sectionKey} - ${sections[sectionKey]}`;
+                sectionSelect.appendChild(option);
+            }
+            sectionSelect.disabled = false;
+        }
+    }
+
+    function checkReady() {
+        generateButton.disabled = !sectionSelect.value;
+    }
+
+    // --- API and Content Generation Logic ---
+
+    window.generateContent = async function() {
+        const sectionKey = sectionSelect.value;
+        if (!sectionKey) {
+            statusMessage.textContent = "Please select a Chapter and Section first.";
+            return;
+        }
+
+        const sectionTitle = MOO_STRUCTURE[chapterSelect.value].sections[sectionKey];
+        const userPrompt = userPromptTextarea.value.trim();
+
+        // Update UI for loading state
+        sectionTitleDisplay.textContent = `Drafting: ${sectionKey} - ${sectionTitle}`;
+        contentOutput.innerHTML = `<p class="text-gray-500 italic">AIM-DRRM Writer is synthesizing technical requirements...</p>`;
+        complianceNotes.innerHTML = `<p class="text-yellow-600">Enforcing Compliance Mandate...</p>`;
+        sourcesOutput.classList.add('hidden');
+        loadingIndicator.style.display = 'block';
+        generateButton.disabled = true;
+        statusMessage.textContent = '';
+        
+        // Construct the core query
+        const baseQuery = `Draft the content for MOO Section ${sectionKey}: "${sectionTitle}".`;
+        const finalQuery = userPrompt ? `${baseQuery} The specific instruction is: "${userPrompt}"` : baseQuery;
+
+        try {
+            const result = await callGeminiAPI(finalQuery);
+            displayResult(result.text, result.sources, sectionTitle);
+        } catch (error) {
+            console.error('API Error:', error);
+            statusMessage.textContent = `Error: Failed to generate content. Please check the console.`;
+            contentOutput.innerHTML = `<p class="text-red-500 font-bold">Generation failed. Check network or API configuration.</p>`;
+            complianceNotes.innerHTML = `<p class="text-red-500">Compliance check failed due to API error.</p>`;
+        } finally {
+            loadingIndicator.style.display = 'none';
+            generateButton.disabled = false;
+        }
+    };
+
+    const SYSTEM_INSTRUCTION_TEXT = `You are the AI Manual DRRM Writer (AIM-DRRM Writer), a highly specialized Technical Writer and Compliance Engine for the Ormoc City DRRMO and EOC Manual of Operations (MOO).
+
+MANDATE:
+1.  **Structure:** Strictly follow the provided chapter/section outline structure.
+2.  **Compliance:** Ensure all content is compliant with Philippine national standards (RA 10121, CSC MC No. 12 on PSCP), and international frameworks (Sendai Framework for DRR, ISO 22301 principles).
+3.  **Modern Domains:** Explicitly integrate principles of Climate Change Adaptation, Anticipatory Actions, Service Continuity, and Build Back Better where applicable to the requested section.
+4.  **Format:** Generate the content as clean, technical text suitable for an official operations manual. Use professional language and clear procedures.
+5.  **Output:** Do NOT include any introductory or concluding conversational text. Provide only the draft content.
+
+After drafting the section, generate a separate, concise technical note that lists the core compliance mandates addressed in the text (e.g., "CSC MC 12: Definition of MAD", "RA 10121: Section on Local Funding").`;
+    
+    async function callGeminiAPI(userQuery) {
+        const apiUrl = `${API_URL_BASE}${apiKey}`;
+
+        // Add a prompt part specifically for the compliance note
+        const finalUserQuery = userQuery + "\n\nCRITICAL INSTRUCTION: Separate the generated draft content from the technical compliance notes using the delimiter: ---COMPLIANCE-NOTE---";
+        
+        const payload = {
+            contents: [{ parts: [{ text: finalUserQuery }] }],
+            // Enable Google Search for grounding (real-time standards/data lookups)
+            tools: [{ "google_search": {} }], 
+            systemInstruction: {
+                parts: [{ text: SYSTEM_INSTRUCTION_TEXT }]
+            },
+        };
+
+        const fetchFn = async () => {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+
+            if (!candidate || !candidate.content?.parts?.[0]?.text) {
+                 throw new Error("No content generated by the AI.");
+            }
+            
+            // 1. Extract the generated text and compliance note
+            let text = candidate.content.parts[0].text;
+            let complianceText = "No specific technical compliance note provided by AI.";
+            
+            const parts = text.split("---COMPLIANCE-NOTE---");
+            if (parts.length === 2) {
+                text = parts[0].trim();
+                complianceText = parts[1].trim();
+            } else {
+                // If delimiter is missing, assume all is content
+                complianceText = "Delimiter missing. Content may contain embedded compliance notes.";
+            }
+
+            // 2. Extract grounding sources
+            let sources = [];
+            const groundingMetadata = candidate.groundingMetadata;
+            if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                sources = groundingMetadata.groundingAttributions
+                    .map(attribution => ({
+                        uri: attribution.web?.uri,
+                        title: attribution.web?.title,
+                    }))
+                    .filter(source => source.uri && source.title);
+            }
+
+            return { text, complianceText, sources };
+        };
+
+        // Use backoff for resilience
+        return await retryWithBackoff(fetchFn);
+    }
+
+    function displayResult(resultText, sources, sectionTitle) {
+        // Split content and compliance note
+        const [draftContent, complianceNote] = resultText.split("---COMPLIANCE-NOTE---");
+
+        // Display Main Content
+        contentOutput.innerHTML = `
+            <div class="p-4 bg-gray-50 border-l-4 border-red-500 mb-4">
+                <h4 class="font-bold">MOO Section Draft:</h4>
+                <p class="text-sm italic">${sectionTitle}</p>
+            </div>
+            ${draftContent.trim().replace(/\n/g, '<br>')}
+        `;
+        
+        // Display Compliance Note
+        complianceNotes.innerHTML = complianceNote ? complianceNote.trim().replace(/\n/g, '<br>') : `AI failed to separate the compliance note. Check content above.`;
+
+        // Display Sources
+        sourcesList.innerHTML = '';
+        if (sources.length > 0) {
+            sources.forEach((source, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${source.uri}" target="_blank" class="text-blue-600 hover:underline">${source.title}</a>`;
+                sourcesList.appendChild(li);
+            });
+            sourcesOutput.classList.remove('hidden');
+        } else {
+            sourcesOutput.classList.add('hidden');
+        }
+    }
+
+
+    // --- Initialization ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Setup dropdowns and listeners
+        populateDropdowns();
+        chapterSelect.addEventListener('change', updateSections);
+        sectionSelect.addEventListener('change', checkReady);
+    });
+
+</script>
+</body>
+</html>
